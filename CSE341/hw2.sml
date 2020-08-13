@@ -98,4 +98,82 @@ fun sum_cards(card_list) =
     in
 	tail_recur(0, card_list)
     end
+
+fun score(card_list, goal) =
+    let
+	val sum = sum_cards(card_list)
+	val preliminary = if sum > goal
+			  then (sum - goal) * 3
+			  else (goal - sum)
+    in
+	if all_same_color(card_list)
+	then preliminary div 2
+	else premilinary
+    end
+
 	
+
+fun officiate(card_list, move_list, goal) =
+    let
+	fun play_round(held_cards, drawable_cards, []) = score(held_cards)
+	  | play_round(held_cards, drawable_cards, current_move::future_moves) = 
+	    case current_move of
+		Discard card => remove_card(held_cards, card, IllegalMove)
+	      | Draw => case drawable_cards of
+			    [] => score(held_cards)
+			  | drawn_card::undrawn_cards => if sum(drawn_card::held_cards) > goal
+							 then score(drawn_card::held_cards)
+							 else play_round(drawn_card::held_cards, undrawn_cards, future_moves)
+    in
+	play_round([], card_list, move_list)
+    end
+
+fun sum_challenge(card_list, goal) =
+    let
+	fun count_aces(sum,cards) =
+	    case cards of
+		[] => sum
+	      | (_, rank):: other_cards => if rank = Ace then contains_ace(sum+1, other_cards)
+					   else contains_ace(sum, other_cards)
+							    
+	fun remove_10_if_greater_than_goal(sum, max_times) =
+	    if max_times <= 0 orelse goal > sum then sum
+	    else remove_10_if_greater_than_goal(sum-10, max_times-1)
+					       
+	val ace_count = count_aces(0, card_list)
+	
+    in
+	(* to make aces count as 11 add 1 for every ace
+	   removing 10 then makes them count as 1 *)
+	remove_10_if_greater_than_goal(sum_cards(card_list) + ace_count, ace_count)
+    end
+	
+
+fun score_challenge(card_list, goal) =
+    let
+	
+	val sum = sum_challenge(card_list, goal)
+	val preliminary = if sum > goal
+			  then (sum - goal) * 3
+			  else (goal - sum)
+    in
+	if all_same_color(card_list)
+	then preliminary div 2
+	else premilinary
+    end
+	
+	
+fun officiate_challenge(card_list, move_list, goal) =
+    let
+	fun play_round(held_cards, drawable_cards, []) = score_challenge(held_cards)
+	  | play_round(held_cards, drawable_cards, current_move::future_moves) = 
+	    case current_move of
+		Discard card => remove_card(held_cards, card, IllegalMove)
+	      | Draw => case drawable_cards of
+			    [] => score(held_cards)
+			  | drawn_card::undrawn_cards => if sum_challenge(drawn_card::held_cards) > goal
+							 then score_challenge(drawn_card::held_cards)
+							 else play_round(drawn_card::held_cards, undrawn_cards, future_moves)
+    in
+	play_round([], card_list, move_list)
+    end

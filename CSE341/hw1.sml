@@ -53,8 +53,7 @@ fun date_to_string(date: int * int * int) =
 	val month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     in
 	get_nth(month_names, #2 date) ^ " " ^
-	Int.toString(#3 date) ^ ", " ^
-	Int.toString(#1 date)
+	Int.toString(#3 date) ^ ", " ^ Int.toString(#1 date)
     end;
 
 fun number_before_reaching_sum(sum: int, xs: int list) =
@@ -87,8 +86,7 @@ fun oldest(dates: (int * int * int) list) =
 	let
 	    val oldest_in_tl = oldest(tl dates)
 	in
-	    (* if oldest_in_tl is NONE or hd is bigger *)
-	    if not(isSome oldest_in_tl) orelse is_older(hd dates, valOf oldest_in_tl)
+	    if not(isSome oldest_in_tl) orelse is_older(hd dates, valOf oldest_in_tl)  (* if oldest_in_tl is NONE or hd is bigger *)
 	    then SOME (hd dates)
 	    else oldest_in_tl
 	end;
