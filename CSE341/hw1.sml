@@ -1,19 +1,14 @@
 
-val d1 = (2013, 02, 29);
-val d2 = (2013, 02, 28);
-
-val dates_man = [d1, d2, (2012, 03, 23), (2010, 10, 23), (2002, 01, 23), (2032, 03, 06)];
-
 fun is_older(date1: int * int * int,  date2: int * int * int) =
     if #1 date1 = #1 date2
     then
 	if #2 date1 = #2 date2
 	then
-	    #3 date1 > #3 date2
+	    #3 date1 < #3 date2
 	else
-	    #2 date1 > #2 date2
+	    #2 date1 < #2 date2
     else
-	#1 date1 > #1 date2;
+	#1 date1 < #1 date2;
 
 fun number_in_month(dates: (int * int * int) list, month: int) =
     if null dates
@@ -70,14 +65,9 @@ fun what_month(day_num: int) =
     end;
 
 fun month_range(day1: int, day2: int) =
-    let
-	fun range(num1: int, num2: int) =
-	    if num1 > num2
-	    then []
-	    else num1 :: range(num1 + 1, num2);
-    in
-	range(what_month(day1), what_month(day2))
-    end;
+    if day1 > day2
+    then []
+    else what_month(day1) :: month_range(day1 + 1, day2);
 
 fun oldest(dates: (int * int * int) list) =
     if null dates
@@ -136,18 +126,3 @@ fun reasonable_date(date: int * int * int) =
 	    false
     end;
 	
-				    
-
-val t1 = number_in_month(dates_man, 10);
-val t2 = number_in_months(dates_man, [2,3]);
-val t3 = dates_in_month(dates_man, 10);
-val t4 = dates_in_months(dates_man, [2,3]);
-val t5 = get_nth(["1","2","3","4","5"],4);
-val t6 = date_to_string(d1);
-val t7 = number_before_reaching_sum(10, [1,2,3,4,5,6,7,8]);
-val t8 = what_month(122);
-val t9 = month_range(1, 122); 
-val t10 = oldest(dates_man);
-val t11 = number_in_months_challenge(dates_man, [2,2,3]);
-val t12 = reasonable_date(2020,2,29);
-val t13 = reasonable_date(2019,2,29);
