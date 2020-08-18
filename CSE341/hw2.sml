@@ -9,13 +9,13 @@ fun same_string(s1 : string, s2 : string) =
 (* put your solutions for problem 1 here *)
 
 fun all_except_option(item, list) =
-    let fun list_until_option(previous, rest) =
+    let fun tail_recur(previous, rest) =
 	    case rest of
 		[] => NONE
 	      | head::tail => if item = head
 			      then SOME (previous @ tail)
-			      else list_until_option(head::previous, tail)
-    in list_until_option([], list)
+			      else tail_recur(head::previous, tail)
+    in tail_recur([], list)
     end;
 	
 fun get_substitutions1(substitutions_list, name) =
@@ -27,12 +27,12 @@ fun get_substitutions1(substitutions_list, name) =
 
 fun get_substitutions2(substitutions_list, name) =
     let
-	fun tail_recur(previous, rest) =
+	fun get_substitutions_list_of_lists(previous, rest) =
 	    case rest of
 		[] => previous
 	      | possible_subs::tail => case all_except_option(name, possible_subs) of
-					   NONE => tail_recur(previous, tail)
-					 | SOME subs => tail_recur(subs :: previous, tail)
+					   NONE => get_substitutions_list_of_lists(previous, tail)
+					 | SOME subs => get_substitutions_list_of_lists(subs :: previous, tail)
 
 	fun flatten(previous, rest) =
 	    case rest of
@@ -40,7 +40,7 @@ fun get_substitutions2(substitutions_list, name) =
 	      | []::tail => flatten(previous, tail) 
 	      | (inner_head::inner_tail)::tail => flatten(inner_head::previous, inner_tail::tail)
     in
-	flatten([], tail_recur([], substitutions_list))
+	flatten([], get_substitutions_list_of_lists([], substitutions_list))
     end;
 
 fun similar_names(substitutions_list, {first=first_name, middle=middle_name, last=last_name}) =
@@ -78,9 +78,9 @@ fun card_value(_, rank) =
       | Ace => 11 
       | _ => 10 (* Jack | Queen | King *)
 
-fun remove_card(cs, c, e) =
-    case all_except_option(c, cs) of
-	NONE => raise e
+fun remove_card(card_list, card, error) =
+    case all_except_option(card, card_list) of
+	NONE => raise error
       | SOME list => list
 			 
 fun all_same_color(card_list) =
@@ -88,8 +88,8 @@ fun all_same_color(card_list) =
 	head::neck::tail => if card_color(head) = card_color(neck)
 			    then all_same_color(neck::tail)
 			    else false
+     | _::[] => true 
      | [] => true
-     | _::_ => true (* one item *)
 
 fun sum_cards(card_list) =
     let fun tail_recur(sum, rest) =
@@ -115,16 +115,19 @@ fun score(card_list, goal) =
 	
 
 fun officiate(card_list, move_list, goal) =
-    let
-	fun play_round(held_cards, drawable_cards, []) = score(held_cards, goal)
-	  | play_round(held_cards, drawable_cards, current_move::future_moves) = 
-	    case current_move of
-		Discard card => play_round(remove_card(held_cards, card, IllegalMove), drawable_cards, future_moves)
-	      | Draw => case drawable_cards of
-			    [] => score(held_cards, goal)
-			  | drawn_card::undrawn_cards => if sum_cards(drawn_card::held_cards) > goal
-							 then score(drawn_card::held_cards, goal)
-							 else play_round(drawn_card::held_cards, undrawn_cards, future_moves)
+    let	
+	fun play_round(held_cards, drawable_cards, moves) =
+	    case moves of
+		[] => score(held_cards, goal)
+	      | current_move::future_moves =>
+		case current_move of
+		    Discard card => play_round(remove_card(held_cards, card, IllegalMove), drawable_cards, future_moves)
+		  | Draw => case drawable_cards of
+				[] => score(held_cards, goal)
+			      | drawn_card::undrawn_cards => if sum_cards(drawn_card::held_cards) > goal
+							     then score(drawn_card::held_cards, goal)
+							     else play_round(drawn_card::held_cards, undrawn_cards, future_moves)
+
     in
 	play_round([], card_list, move_list)
     end
@@ -134,8 +137,8 @@ fun sum_challenge(card_list, goal) =
 	fun count_aces(sum,cards) =
 	    case cards of
 		[] => sum
-	      | (_, rank):: other_cards => if rank = Ace then count_aces(sum+1, other_cards)
-					   else count_aces(sum, other_cards)
+	      | (_, Ace)::other_cards => count_aces(sum+1, other_cards)
+	      | _::other_cards  => count_aces(sum, other_cards)
 							    
 	fun remove_10_if_greater_than_goal(sum, max_times) =
 	    if max_times <= 0 orelse sum < goal then sum
@@ -162,16 +165,18 @@ fun score_challenge(card_list, goal) =
 	
 	
 fun officiate_challenge(card_list, move_list, goal) =
-    let
-	fun play_round(held_cards, drawable_cards, []) = score_challenge(held_cards, goal)
-	  | play_round(held_cards, drawable_cards, current_move::future_moves) = 
-	    case current_move of
-		Discard card => play_round(remove_card(held_cards, card, IllegalMove), drawable_cards, future_moves)
-	      | Draw => case drawable_cards of
-			    [] => score_challenge(held_cards, goal)
-			  | drawn_card::undrawn_cards => if sum_challenge(drawn_card::held_cards, goal) > goal
-							 then score_challenge(drawn_card::held_cards, goal)
-							 else play_round(drawn_card::held_cards, undrawn_cards, future_moves)
+    let (* identical to officiate but uses the challenge functions *)
+	fun play_round(held_cards, drawable_cards, moves) =
+	    case moves of
+		[] => score(held_cards, goal)
+	      | current_move::future_moves => 
+		case current_move of
+		    Discard card => play_round(remove_card(held_cards, card, IllegalMove), drawable_cards, future_moves)
+		  | Draw => case drawable_cards of
+				[] => score_challenge(held_cards, goal)
+			      | drawn_card::undrawn_cards => if sum_challenge(drawn_card::held_cards, goal) > goal
+							     then score_challenge(drawn_card::held_cards, goal)
+							     else play_round(drawn_card::held_cards, undrawn_cards, future_moves)
     in
 	play_round([], card_list, move_list)
     end
@@ -182,7 +187,7 @@ fun careful_player(card_list, goal) =
 	    let fun recurse(previous, rest) =
 		    case rest of
 			[] => NONE
-		      | head::tail => if score(card :: previous @ tail, goal) = 0
+		      | head::tail => if score(card::(previous @ tail), goal) = 0
 				      then SOME (Discard head)
 				      else recurse(head::previous, tail)
 	    in
@@ -194,7 +199,7 @@ fun careful_player(card_list, goal) =
 	    then []
 	    else
 	    case cards_to_draw of
-		[] => []
+		[] => [Draw]
 	      | drawn_card::undrawn_cards => if sum_cards(held_cards) + 10 > goal
 					     then case try_replacing_card(held_cards, drawn_card) of
 						      NONE => []

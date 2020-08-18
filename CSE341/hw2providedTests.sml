@@ -1,22 +1,38 @@
-(* Dan Grossman, CSE341 Spring 2013, HW2 Provided Tests *)
+use "hw2.sml";
 
-(* These are just two tests for problem 2; you will want more.
+val test1 = all_except_option ("string", ["string"]) = SOME []
 
-   Naturally these tests and your tests will use bindings defined 
-   in your solution, in particular the officiate function, 
-   so they will not type-check if officiate is not defined.
- *)
+val test2 = get_substitutions1 ([["foo"],["there"]], "foo") = []
 
-fun provided_test1 () = (* correct behavior: raise IllegalMove *)
-    let val cards = [(Clubs,Jack),(Spades,Num(8))]
-	val moves = [Draw,Discard(Hearts,Jack)]
-    in
-	officiate(cards,moves,42)
-    end
+val test3 = get_substitutions2 ([["foo"],["there"]], "foo") = []
 
-fun provided_test2 () = (* correct behavior: return 3 *)
-    let val cards = [(Clubs,Ace),(Spades,Ace),(Clubs,Ace),(Spades,Ace)]
-	val moves = [Draw,Draw,Draw,Draw,Draw]
-    in
- 	officiate(cards,moves,42)
-    end
+val test4 = similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"}) =
+	    [{first="Fred", last="Smith", middle="W"}, {first="Fredrick", last="Smith", middle="W"},
+	     {first="Freddie", last="Smith", middle="W"}, {first="F", last="Smith", middle="W"}]
+
+val test5 = card_color (Clubs, Num 2) = Black
+
+val test6 = card_value (Clubs, Num 2) = 2
+
+val test7 = remove_card ([(Hearts, Ace)], (Hearts, Ace), IllegalMove) = []
+
+val test8 = all_same_color [(Hearts, Ace), (Hearts, Ace)] = true
+
+val test9 = sum_cards [(Clubs, Num 2),(Clubs, Num 2)] = 4
+
+val test10 = score ([(Hearts, Num 2),(Clubs, Num 4)],10) = 4
+
+val test11 = officiate ([(Hearts, Num 2),(Clubs, Num 4)],[Draw], 15) = 6
+
+val test12 = officiate ([(Clubs,Ace),(Spades,Ace),(Clubs,Ace),(Spades,Ace)],
+                        [Draw,Draw,Draw,Draw,Draw],
+                        42)
+             = 3
+
+val test13 = ((officiate([(Clubs,Jack),(Spades,Num(8))],
+                         [Draw,Discard(Hearts,Jack)],
+                         42);
+               false) 
+              handle IllegalMove => true)
+
+		 
