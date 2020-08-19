@@ -43,14 +43,15 @@ fun get_substitutions2(substitutions_list, name) =
 	flatten([], get_substitutions_list_of_lists([], substitutions_list))
     end;
 
+
 fun similar_names(substitutions_list, {first=first_name, middle=middle_name, last=last_name}) =
-    let fun tail_recur(previous, rest) =
-	    case rest of
-		[] => previous
-	      | substitution::tail => tail_recur({first=substitution, middle=middle_name, last=last_name}::previous, tail)
+    let fun helper(substitutions) =
+	    case substitutions of
+		[] => []
+	      | head::tail => {first=head, middle=middle_name, last=last_name}::helper(tail)
     in
-	{first=first_name, middle=middle_name, last=last_name} :: tail_recur([], get_substitutions2(substitutions_list, first_name))
-    end;
+	helper(first_name::get_substitutions1(substitutions_list, first_name))
+    end
 
 (* you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)
