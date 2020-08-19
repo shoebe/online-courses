@@ -1,0 +1,8 @@
+score_challenge: Your function returns an incorrect result when the sum is greater than the goal, and the hand contains cards of both colors (ace = 11). [incorrect answer]
+score_challenge: Your function returns an incorrect result when the sum is exactly equal to the goal. [incorrect answer]
+officiate_challenge: Your function returns an incorrect result when the game should end due to the sum of cards in the player's hand exceeding the goal. [incorrect answer]
+officiate_challenge: Your function returns an incorrect result when the game should end due to an empty move list with low score. [incorrect answer]
+
+Because the auto-grader gave a score above 80, here is the link to a message from a very cute dog: https://drive.google.com/file/d/0B5sUgbs6aDNpN2ppTUpyVDlQX0U/view?pref=2&pli=1
+
+With extra credit you received 103.34999999999998%!  Grade capped at 100%
