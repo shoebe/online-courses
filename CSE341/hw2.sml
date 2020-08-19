@@ -142,7 +142,7 @@ fun sum_challenge(card_list, goal) =
 	      | _::other_cards  => count_aces(sum, other_cards)
 							    
 	fun remove_10_if_greater_than_goal(sum, max_times) =
-	    if max_times <= 0 orelse sum < goal then sum
+	    if max_times <= 0 orelse sum <= goal then sum
 	    else remove_10_if_greater_than_goal(sum-10, max_times-1)
 
     in
@@ -153,7 +153,6 @@ fun sum_challenge(card_list, goal) =
 
 fun score_challenge(card_list, goal) =
     let
-	
 	val sum = sum_challenge(card_list, goal)
 	val preliminary = if sum > goal
 			  then (sum - goal) * 3
@@ -169,7 +168,7 @@ fun officiate_challenge(card_list, move_list, goal) =
     let (* identical to officiate but uses the challenge functions *)
 	fun play_round(held_cards, drawable_cards, moves) =
 	    case moves of
-		[] => score(held_cards, goal)
+		[] => score_challenge(held_cards, goal)
 	      | current_move::future_moves => 
 		case current_move of
 		    Discard card => play_round(remove_card(held_cards, card, IllegalMove), drawable_cards, future_moves)
