@@ -58,13 +58,11 @@ fun first_answer f xs =
 fun all_answers f xs =
     let fun option_fold (f,xs,acc) =
 	    case xs of
-		[] => acc
+		[] => SOME acc
 	      | x::xs' => case f x of
-			     NONE => []
+			     NONE => NONE
 			   | SOME lst => option_fold (f, xs', lst @ acc)
-    in case option_fold(f,xs,[]) of
-	    [] => NONE
-	  | lst => SOME lst
+    in option_fold(f,xs,[])
     end
 
 val count_wildcards = g (fn () => 1) (fn x => 0)
@@ -83,6 +81,7 @@ fun check_pat p =
 		TupleP ps => List.foldl (fn (p, acc) => helper (p, acc) @ acc) acc ps
 	      | Variable s => if List.exists (fn x => x=s) acc then raise NotUnique
 			      else [s]
+	      | ConstructorP (_, p) => helper (p, acc) 
 	      | _ => [] 
     in
 	let val _ = helper(p, [])
