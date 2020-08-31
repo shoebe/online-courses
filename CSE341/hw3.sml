@@ -26,14 +26,6 @@ fun g f1 f2 p =
 	  | _                 => 0
     end
 
-(**** for the challenge problem only ****)
-
-datatype typ = Anything
-	     | UnitT
-	     | IntT
-	     | TupleT of typ list
-	     | Datatype of string
-
 (**** you can put all your code here ****)
 
 val only_capitals = List.filter (fn x => (Char.isUpper o String.sub) (x,0))
@@ -91,6 +83,7 @@ fun check_pat p =
 		TupleP ps => List.foldl (fn (p, acc) => helper (p, acc) @ acc) acc ps
 	      | Variable s => if List.exists (fn x => x=s) acc then raise NotUnique
 			      else [s]
+	      | _ => [] 
     in
 	let val _ = helper(p, [])
 	in true
@@ -111,27 +104,53 @@ fun first_match value ps =
     let val answer = first_answer (fn x => match (value, x)) ps
     in SOME answer end handle NoAnswer => NONE
 
-fun typecheck_patterns typs ps =
+(**** for the challenge problem only ****)
+
+datatype typ = Anything
+	     | UnitT
+	     | IntT
+	     | TupleT of typ list
+	     | Datatype of string
+
+exception noSuitableType		  
+fun typecheck_patterns datatypes ps =
     let
-	fun typ_match (constructor, typ, pat) =
-	    case (typ, pat) of
-		(Anything, _) => SOME typ
-	      | (UnitT, UnitP) => SOME typ
-	      | (IntT, ConstP x) => SOME typ
-	      | (TupleT typs, TupleP ps) => if isSome all_answers typ_match (ListPair.zip (typs, ps))
-					   then SOME typ
-					   else NONE
-	      | (Dataytpe s1, ConstructorP s2 p) => if s = t then SOME typ else NONE
-	      | _ => NONE
+	fun equivalent_type (t1, t2) =
+	    case (t1, t2) of
+		(Anything, _) => true
+	      | (_, Anything) => true
+	      | (TupleT typs1, TupleT typs2) => ListPair.foldl (fn (typ1, typ2, acc) => acc andalso equivalent_type (typ1, typ2))
+							       true (typs1, typs2)
+	      | (Datatype s1, Datatype s2) => s1=s2 
+	      | _ => t1=t2
+		 
+	fun get_type pat =
+	    case pat of
+		Variable _ => Anything
+	      | Wildcard => Anything
+	      | UnitP => UnitT  
+	      | ConstP _ => IntT
+	      | TupleP ps => TupleT (List.map get_type ps)
+	      | ConstructorP (s, p) => (case List.find (fn (c, _, _) => s=c) datatypes of
+					    SOME (c, d, t) => if equivalent_type (get_type p, t) then Datatype d else raise noSuitableType
+					  | NONE => raise noSuitableType)
 
-	val count_more_general = ListPair.foldl (fn (typ1, typ2, acc) => acc + more_general (typ1, typ2)) 0
-
-	fun more_general (typ1,typ2) =>
-	    case (typ1, typ2) of
-		(Anything, Anything) => 0
-		(Anything, _) => 1
-	      | (_, Anything) => -1
-	      | (TupleT typs1, TupleT typs2) => Integer.sign count_more_general (typs1, typs2)
-	      | _ => 0
+	fun more_lenient (t1, t2) =
+	    case (t1, t2) of
+	      (_, Anything) => t1
+	      | (Anything, _) => t2
+	      | (TupleT typs1, TupleT typs2) =>  TupleT ( ListPair.map more_lenient (typs1, typs2) )
+	      | _ => (* assume equivalence *) t1
+			 
+	fun all_equivalent ls =
+	    case ls of
+		head::neck::tail => equivalent_type (head,neck) andalso all_equivalent (neck::tail)
+	      | _ => true
+			 
+	val most_lenient = List.foldl more_lenient Anything
+	val types_list =  List.map get_type ps 
     in
-	
+	if all_equivalent types_list
+	then SOME ( most_lenient  types_list )
+	else NONE
+    end handle noSuitableType => NONE
