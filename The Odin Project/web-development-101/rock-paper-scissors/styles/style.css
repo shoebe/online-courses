@@ -1,0 +1,130 @@
+body {
+    background: #9fcee3;
+}
+
+
+#game {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #4fabc2;
+    width: 30%;
+    margin: 0 auto;
+}
+
+p {
+    text-align: center;
+}
+
+input:disabled {
+    color: black;
+}
+
+.centered {
+    margin: 0 auto;
+}
+
+.flexbox {
+    display: flex;
+}
+
+#round-tracker {
+    display: block;
+    font-size: xx-large;
+    background-color: white;
+    width: fit-content;
+    border-radius: 5px;
+    padding: 0 5px;
+    margin-top: 10px;
+}
+
+#points.flexbox {
+    justify-content: space-around;
+}
+
+#points p{
+    background-color: white;
+    border-width: 5px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 0px 5px;
+    font-size: larger;
+}
+
+#play-area input {
+    height: 125px;
+    border: 5px;
+    border-style: solid;
+    margin: 10px;
+    border-radius: 20px;
+}
+
+input {
+    opacity: 1;
+    transition: opacity 1s, transform 1s;
+}
+
+input.fade {
+    opacity: 0;
+}
+
+#play-area #player-selection.flexbox {
+    flex-direction: column;
+    justify-content: start;
+    align-items: flex-start;
+}
+
+#play-area #player-selection input:hover {
+    filter: brightness(85%);
+}
+
+
+#play-area #player-selection input.moveup {
+    transform: translate(0,-155px); 
+}
+
+#play-area #player-selection input.movedown {
+    transform: translate(0,155px) ; 
+}
+
+#play-area #computer-selection #actual{
+    position: absolute;
+}
+
+#play-area.flexbox {
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 25px;
+    padding-bottom: 20px;
+}
+
+input[type=button] {
+    display: block;
+    background-color: white;
+    border-style: solid;
+    border-color: black;
+    border-width: 5px;
+    border-radius: 5px;
+    font-size: larger;
+}
+
+#next-round {
+    transform: translate(0,-150px);
+}
+
+#round-over {
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: fit-content;
+}
+
+#round-over p{
+    font-size: x-large;
+}
+
+#round-over input{
+    display: block;
+}

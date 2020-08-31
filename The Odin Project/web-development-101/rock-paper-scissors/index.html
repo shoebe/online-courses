@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Rock, Paper, Scissors</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="styles/style.css">
+    </head>
+
+    <body>
+        <div id="game">
+
+            <p id="round-tracker" class="centered">Round 1 of 5</p>
+
+            <div id="points" class="flexbox" class="centered">
+                <p id="player">Player: 0</p>
+                <p id="computer">Computer: 0</p>
+            </div>
+
+            <div id="play-area" class="flexbox centered" >
+                <div id="player-selection" class="flexbox">
+                    <input type="image" src="images/rock.png" id="rock">
+                    <input type="image" src="images/paper.png" id="paper">
+                    <input type="image" src="images/scissors.png" id="scissors">
+                </div>
+
+                <div id="computer-selection" class=flexbox>
+                    <input type="image" src="images/rock.png" id="actual" class="fade" disabled>
+                    <input type="image" src="images/unknown.png" id="question-mark" disabled>
+                </div>
+            </div>
+
+            <input type="button" id="next-round" value="next-round" class="centered fade">
+
+            <div id="round-over" class="centered" hidden>
+                <p id="win-loss">You won/lost!</p>
+                <input type="button" value="Play again" class="centered" onclick="window.location.reload(false)">
+            </div>
+
+        </div> 
+
+    <script src="scripts/main.js"></script>
+    </body>
+</html>
