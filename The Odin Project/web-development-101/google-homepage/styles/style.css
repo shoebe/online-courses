@@ -1,0 +1,143 @@
+body{
+    background: #fff;
+}
+
+a, input, button, p{
+    color: rgba(0,0,0);
+    opacity: 0.75;
+    font-style: normal;
+    text-decoration: none;
+    font-family: arial, sans-serif;
+}
+
+a:hover{
+    text-decoration: underline;
+}
+
+.flex-container {
+    display: flex;
+}
+
+#top{
+    height: 30px;
+    padding-top: 15px;
+}
+
+#top #right-nav{
+    justify-content: flex-end;
+    float: right;
+    padding-right: 17px;
+}
+
+#top #right-nav #S-image{
+    margin-top: -8px;
+    border-radius: 16px;
+}
+
+#top #left-nav{
+    justify-content: flex-start;
+    float: left;
+    padding-left: 17px;
+}
+
+#top #left-nav #Store{
+    padding-left: 3px;
+}
+
+#top a{
+    padding-right: 15px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+#middle {
+    padding-top: 145px;
+}
+
+#middle #main-logo{
+    width: 272px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#middle #search-bar-container{
+    margin-top: 20px;
+    background-color: white;
+    border: 1px solid #dfe1e5;
+    border-radius: 25px;
+    width:480px;
+    height:48px;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+#middle #search-bar-container:hover {
+    box-shadow: 0 0 5px rgb(192, 192, 192);
+}
+
+#middle #search-bar-container #text-box {
+    width:387px;
+    height:34px;
+    border: none;
+    outline: none;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 16px;
+}
+
+#middle #mic{
+    width: 24px;
+    height: 24px;
+}
+
+#middle #stolen-search-thing {
+    fill:rgb(154, 160, 166);
+    color:rgb(154, 160, 166);
+}
+
+#middle #under-search-bar-buttons{
+    padding-top: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    width:320px;
+    justify-content: center;
+    align-items: center;
+}
+
+#middle #under-search-bar-buttons .pushy{
+    box-sizing: inherit;
+    height:36px;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-left: 5px;
+    margin-right: 5px;
+    font-size: 14px;
+    background-color: rgb(242, 242, 242);
+    border-style: solid;
+    border-color: transparent;
+    border-width: 1px;
+    color: rgb(95, 99, 104);
+    opacity: 1;
+    border-radius: 4px;
+}
+
+#middle #under-search-bar-buttons .pushy:hover{
+    border-color: rgb(221,221,221);
+}
+
+#middle #language{
+    font-size: 13px;
+    padding-top:20px;
+    width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+#middle a{
+    color: rgb(0, 0, 238);
+    opacity:1;
+}
+
