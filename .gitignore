@@ -1,1 +1,5 @@
 *.sml~
+**/incomplete
+
+# Rust compilation 
+**/target
